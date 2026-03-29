@@ -1,0 +1,26 @@
+# Core framework
+google-adk
+
+# Vector DB
+chromadb
+
+# Embeddings
+sentence-transformers
+
+# PDF processing
+PyMuPDF
+
+# Image processing
+Pillow
+
+# HuggingFace models (BLIP)
+transformers
+torch
+
+# Google Gemini API
+google-generativeai
+
+# Optional but often required dependencies
+numpy
+tqdm
+scikit-learn
