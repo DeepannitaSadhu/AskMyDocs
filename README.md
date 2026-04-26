@@ -1,165 +1,148 @@
-# 📄 AskMyDocs
+# AskMyDocs
 
-> A smart Retrieval-Augmented Generation (RAG) system that allows you to **ingest PDFs and ask questions from them using AI**.
+A production-ready Retrieval-Augmented Generation (RAG) system for intelligent PDF document querying.
 
----
-
-## 🚀 Overview
-
-This project is a **unified agentic pipeline** that can:
-
-* 📥 Ingest PDF documents
-* ✂️ Chunk and process text
-* 🧠 Store embeddings in a vector database (ChromaDB)
-* 🔍 Retrieve relevant context
-* 💬 Answer user queries based ONLY on the document
-
-⚠️ Note: This system is **PDF-only** (not multimodal). It processes **text content from PDFs**.
+AskMyDocs lets you ingest PDF documents and ask natural language questions against them — powered by Google Gemini, ChromaDB, and Sentence Transformers. It operates as a fully agentic pipeline with built-in ambiguity detection and answer validation.
 
 ---
 
-## 🧠 How It Works
+## Table of Contents
 
-### 🔹 Ingestion Pipeline
-
-1. Upload PDF to `documents/`
-2. Extract text from PDF
-3. Chunk text into smaller pieces
-4. Convert text into embeddings
-5. Store in ChromaDB with metadata
-
-### 🔹 Query Pipeline
-
-1. User asks a question
-2. Check if query is ambiguous
-3. Retrieve relevant chunks from DB
-4. Generate answer using context
-5. Validate answer relevance
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Tech Stack](#tech-stack)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [Project Structure](#project-structure)
+- [Features](#features)
+- [Limitations](#limitations)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
+- [License](#license)
 
 ---
 
-## 🏗️ Project Structure
+## Overview
 
-```
-project/
-│
-├── agent.py              # Main agent definition
-├── tools.py              # All pipeline tools (ingestion + retrieval)
-├── documents/            # Place your PDFs here
-├── chroma_db/            # Vector database storage
-├── extracted_images/     # (optional, auto-created)
-├── requirements.txt
-└── README.md
-```
+AskMyDocs is a unified agentic pipeline built on Google ADK that enables users to:
+
+- Ingest and index PDF documents into a persistent vector store
+- Ask natural language questions grounded strictly in the ingested document content
+- Receive validated, context-aware responses with automatic ambiguity handling
+
+> Scope: This system processes text content from PDFs only. Images, audio, and video are not supported.
 
 ---
 
-## ⚙️ Tech Stack
+## Architecture
 
-* 🧩 Google ADK (Agent framework)
-* 🧠 Gemini (LLM)
-* 🔎 ChromaDB (Vector DB)
-* 📊 Sentence Transformers (Embeddings)
-* 📄 PyMuPDF (PDF parsing)
+AskMyDocs runs two coordinated pipelines:
+
+### Ingestion Pipeline
+
+PDF Upload → Text Extraction → Chunking → Embedding → ChromaDB Storage
+
+1. Place PDF in the documents/ directory
+2. Text is extracted using PyMuPDF
+3. Content is chunked into semantically meaningful segments
+4. Chunks are converted to vector embeddings via Sentence Transformers
+5. Embeddings and metadata are persisted in ChromaDB
+
+### Query Pipeline
+
+User Query → Ambiguity Check → Vector Retrieval → LLM Generation → Relevance Validation → Response
+
+1. User submits a natural language question
+2. Query is checked for ambiguity before retrieval
+3. Relevant chunks are retrieved from ChromaDB via semantic search
+4. Gemini generates a grounded answer using retrieved context
+5. Answer is validated for relevance before being returned
 
 ---
 
-## 🛠️ Installation
+## Tech Stack
 
-```bash
-# Clone the repo
-git clone https://github.com/your-username/pdf-rag-agent.git
-cd pdf-rag-agent
+| Component | Technology |
+|---|---|
+| Agent Framework | [Google ADK](https://google.github.io/adk-docs/) |
+| LLM | [Google Gemini](https://deepmind.google/technologies/gemini/) |
+| Vector Database | [ChromaDB](https://www.trychroma.com/) |
+| Embeddings | [Sentence Transformers](https://www.sbert.net/) |
+| PDF Parsing | [PyMuPDF (fitz)](https://pymupdf.readthedocs.io/) |
 
-# Create virtual environment
+---
+
+## Prerequisites
+
+- Python 3.9 or higher
+- A valid [Google API key](https://aistudio.google.com/app/apikey) with Gemini access
+
+---
+
+## Installation
+
+1. Clone the repository
+
+git clone https://github.com/your-username/askmydocs.git
+cd askmydocs
+
+2. Create and activate a virtual environment
+
 python -m venv venv
-source venv/bin/activate   # Windows: venv\Scripts\activate
 
-# Install dependencies
-pip install -r requirements.txt
-```
+# macOS / Linux
+source venv/bin/activate
 
----
-
-## 🔑 Setup
-
-Set your Google API key:
-
-```bash
-export GOOGLE_API_KEY="your_api_key_here"
 # Windows
+venv\Scripts\activate
+
+3. Install dependencies
+
+pip install -r requirements.txt
+
+---
+
+## Configuration
+
+Set your Google API key as an environment variable before running the application:
+
+# macOS / Linux
+export GOOGLE_API_KEY="your_api_key_here"
+
+# Windows (Command Prompt)
 set GOOGLE_API_KEY=your_api_key_here
-```
+
+# Windows (PowerShell)
+$env:GOOGLE_API_KEY="your_api_key_here"
+
+> Tip: For persistent configuration, add this to your shell profile (.bashrc, .zshrc, etc.) or use a .env file with python-dotenv.
 
 ---
 
-## ▶️ Run the Agent
+## Usage
 
-```bash
+Start the agent
+
 adk web
-```
 
----
+Ingest a PDF
 
-## 💡 Usage
+Place your PDF in the documents/ folder, then send:
 
-### 📥 Ingest a PDF
-
-Example input:
-
-```
 upload sample.pdf
-```
 
-### ❓ Ask Questions
+Ask questions
 
-Example:
+Once ingested, query the document in natural language:
 
-```
 What is the main topic of the document?
-```
+What methodology is described in section 3?
+Summarize the key findings.
+
+The agent will only answer based on content found in the ingested document. If context is insufficient, it will say so rather than hallucinate.
 
 ---
 
-## ✨ Features
-
-* ✅ Unified ingestion + query agent
-* ✅ Automatic ambiguity detection
-* ✅ Context-aware answering
-* ✅ Relevance validation loop
-* ✅ Clean modular tool design
-
----
-
-## ⚠️ Limitations
-
-* ❌ Only works with PDF text (no images, audio, video)
-* ❌ Depends on quality of extracted text
-* ❌ Requires API key for LLM
-
----
-
-## 📌 Future Improvements
-
-* Support for multiple document formats
-* Better ranking strategies
-* Streaming responses
-* UI improvements
-
----
-
-## 🤝 Contributing
-
-Pull requests are welcome! Feel free to open issues for suggestions or bugs.
-
----
-
-## 📜 License
-
-This project is open-source and available under the MIT License.
-
----
-
-## ⭐ If you like this project
-
-Give it a ⭐ on GitHub and share it with others!
+## Project Structure
