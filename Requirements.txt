@@ -20,7 +20,3 @@ torch
 # Google Gemini API
 google-generativeai
 
-# Optional but often required dependencies
-numpy
-tqdm
-scikit-learn
