@@ -20,7 +20,6 @@ AskMyDocs lets you ingest PDF documents and ask natural language questions again
 - [Limitations](#limitations)
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
-- [License](#license)
 
 ---
 
@@ -146,3 +145,63 @@ The agent will only answer based on content found in the ingested document. If c
 ---
 
 ## Project Structure
+
+askmydocs/
+│
+├── agent.py              # Main agent definition and orchestration logic
+├── tools.py              # Ingestion and retrieval tool implementations
+├── requirements.txt      # Python dependencies
+├── README.md
+│
+├── documents/            # Drop your PDFs here for ingestion
+├── chroma_db/            # Persistent ChromaDB vector store (auto-created)
+└── extracted_images/     # Extracted image artifacts (auto-created, optional)
+
+---
+
+## Features
+
+- Unified agentic pipeline — Single agent handles both ingestion and querying
+- Automatic ambiguity detection — Clarifies vague queries before retrieval
+- Context-grounded answers — Responses are based strictly on document content
+- Relevance validation — Answers are checked against source context before delivery
+- Persistent vector store — ChromaDB retains indexed data across sessions
+- Modular tool design — Each pipeline stage is independently testable
+
+---
+
+## Limitations
+
+- Processes text content only — embedded images, charts, and scanned pages are not parsed
+- Answer quality is dependent on the quality of the extracted PDF text
+- Requires an active Google API key with Gemini quota
+- Currently supports single-document querying per session
+
+---
+
+## Roadmap
+
+- [ ] Multi-document ingestion and cross-document querying
+- [ ] Support for additional file formats (DOCX, TXT, HTML)
+- [ ] Streaming responses for faster perceived latency
+- [ ] Improved chunk ranking with hybrid search (BM25 + dense retrieval)
+- [ ] Source citation with page-level references
+- [ ] Web UI for document management and chat history
+
+---
+
+## Contributing
+
+Contributions are welcome. To get started:
+
+1. Fork the repository
+2. Create a feature branch (git checkout -b feature/your-feature)
+3. Commit your changes (git commit -m 'Add your feature')
+4. Push to the branch (git push origin feature/your-feature)
+5. Open a Pull Request
+
+Please open an issue first to discuss significant changes or new features.
+
+---
+
+> Built with Google ADK · Gemini · ChromaDB · Sentence Transformers
